@@ -1,0 +1,320 @@
+{
+  "name": "discord nieuws/ weer ping",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Pas aan voor hoevaak je een melding wilt ontvangen\n",
+        "height": 300
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -380,
+        -60
+      ],
+      "typeVersion": 1,
+      "id": "24d85aa0-4f45-46c6-90b1-c84eb1cfed8e",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "## Nos artikel verzameler\n",
+        "height": 240,
+        "width": 220
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -40,
+        -140
+      ],
+      "typeVersion": 1,
+      "id": "ceaa596d-f09c-4601-b8ac-6bd5da6c1ca4",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "url": "https://wttr.in/Amsterdam?format=%C+%t+%h+%w",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        20,
+        280
+      ],
+      "id": "8b003dac-7ff8-41e9-b2ec-9bf988c57fe3",
+      "name": "HTTP weathermap weer"
+    },
+    {
+      "parameters": {
+        "url": "https://feeds.nos.nl/nosnieuwsbinnenland",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.1,
+      "position": [
+        20,
+        -40
+      ],
+      "id": "9a651e76-788c-4cb6-9a26-d6a960ea3427",
+      "name": "RSS Read"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "seconds",
+              "secondsInterval": 1
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -320,
+        100
+      ],
+      "id": "5a78d90a-31b8-4b5c-af5c-fa966cfc64b6",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "content": "## weer",
+        "height": 240,
+        "width": 220
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -40,
+        200
+      ],
+      "typeVersion": 1,
+      "id": "72e7a191-d7f0-4daf-a7f1-d583cf223dc9",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "return {\n  title: $json.title,\n  link: $json.link\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        940,
+        -20
+      ],
+      "id": "acf19431-20ad-49a2-b91b-50342db7f280",
+      "name": "MockAI"
+    },
+    {
+      "parameters": {
+        "authentication": "webhook",
+        "content": "={{ $json.title }}\nLink naar artikel: {{ $json.link }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        1260,
+        -20
+      ],
+      "id": "117bfe76-1886-4468-9bf8-bbdc55d2dd3a",
+      "name": "Discord",
+      "credentials": {
+        "discordWebhookApi": {
+          "id": "cDFNzCrrMcDKay4K",
+          "name": "Discord Webhook account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        640,
+        -20
+      ],
+      "id": "b1ed3c3c-e5ca-4b05-84f0-ab48fb8e6693",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "content": "## Voegt de 2 outputs van het weer en het nieuws samen in een output.\n",
+        "height": 380,
+        "width": 220
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        580,
+        -220
+      ],
+      "id": "62acbf97-c798-4fb6-b45c-6b46769f1814",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## Data puller\nPakt de title's en links van de artikelen en de data van het weer zodat wij die kunnen formeren tot een bericht dat leesbaar is\n",
+        "height": 340,
+        "width": 180
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        900,
+        -200
+      ],
+      "typeVersion": 1,
+      "id": "3d9b5deb-0285-4b05-ab4a-382f5320a448",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "authentication": "webhook",
+        "content": "=@everyone todays weather report: {{ $json.data }}\nNieuws afgelopen 10 uur",
+        "options": {},
+        "files": {
+          "values": [
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        360,
+        280
+      ],
+      "id": "74e5edac-ec40-463c-90a7-1ab7de2536dc",
+      "name": "Discord1",
+      "credentials": {
+        "discordWebhookApi": {
+          "id": "o680jyZCrrcMIGbx",
+          "name": "Discord Webhook account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## weer\nstuurt het weer bericht\n",
+        "height": 280
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        300,
+        160
+      ],
+      "typeVersion": 1,
+      "id": "5030e62b-40ab-4728-b0f7-7b9218e1fa46",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "content": "## Nieuws\nstuurt artikelen naar discord channel\n",
+        "height": 280,
+        "width": 200
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1200,
+        -140
+      ],
+      "id": "57f467e0-4b0c-493e-957f-bde6a5d4410d",
+      "name": "Sticky Note6"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "HTTP weathermap weer": {
+      "main": [
+        [
+          {
+            "node": "Discord1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS Read": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "RSS Read",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "HTTP weathermap weer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MockAI": {
+      "main": [
+        [
+          {
+            "node": "Discord",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "MockAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Discord": {
+      "main": [
+        []
+      ]
+    },
+    "Discord1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "executionTimeout": -1
+  },
+  "versionId": "880794fa-7696-4cc3-92fa-cedd9aca2eab",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "c16a1361f150d6904c109d1862a9646e6d91a5435947f432929140d3e4bef652"
+  },
+  "id": "DvGNOwxqv9NuwfSH",
+  "tags": []
+}
